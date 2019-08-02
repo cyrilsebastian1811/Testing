@@ -9,7 +9,7 @@ jobs:
           name : Install Maven
           command: |
             echo "Hello the current build number is ${CIRCLE_BUILD_NUM}"
-            sudo apt-get install mvn
+            sudo apt install maven
       - run:
           name: Build WAR
           command: |
