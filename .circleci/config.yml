@@ -57,4 +57,4 @@ jobs:
           command : |
             aws lambda update-function-code --region=${REGION} \
             --function-name=csye6225_summer2019 \
-            --zip-file fileb://target/email-1.0-SNAPSHOT.jar
+            --zip-file fileb://email-1.0-SNAPSHOT.jar
