@@ -21,27 +21,23 @@ import java.util.Calendar;
 import java.util.UUID;
 
 public class EmailEvent implements RequestHandler<SNSEvent, Object> {
-static final AmazonDynamoDB DYNAMO_DB = AmazonDynamoDBClientBuilder.defaultClient();
-static final AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
+    static final AmazonDynamoDB DYNAMO_DB = AmazonDynamoDBClientBuilder.defaultClient();
+    static final AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
 
-static final Calendar CALENDAR = Calendar.getInstance();
+    static final Calendar CALENDAR = Calendar.getInstance();
 
     private static final String DOMAIN = System.getenv("domain");
-
     private static final String TABLE = System.getenv("table");
 
     private static final String FROM = "admin@"+DOMAIN;
-
     private static final String SUBJECT = "Password Reset";
-
-    private static final String BODY = "<h1>AWS Library Management System</h1>"
-            + "<h3>Actioned required</h3>"
+    private static final String BODY = "<h1>AWS Library Management System</h1>"+ "<h3>Actioned required</h3>"
             + "<p>You are receiving this email in response to your password reset request "
             + "for your AWS Library Management Account with LoginId: ";
 
     private void sendEmail(String email, String token) throws Exception{
         
-        String content = BODY+email+"</p><p>Link to reset password: "+
+        String content = BODY+email+"</p><p>link to reset password: "+
                 "http://"+DOMAIN+"/reset?email="+email+"&token="+token+"</p>";
 
         SendEmailRequest request = new SendEmailRequest().withDestination(new Destination().withToAddresses(email))
@@ -54,14 +50,15 @@ static final Calendar CALENDAR = Calendar.getInstance();
         client.sendEmail(request);
     }
 
-    private void putItem(String email) {
+    private PutItemOutcome putItem(String email) {
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
         Item item = new Item()
                 .withPrimaryKey("emailId", email)
                 .withString("token", UUID.randomUUID().toString())
-                .withNumber("timeStamp", ((CALENDAR.getTimeInMillis()/1000)+(2*60)));
+                .withNumber("timeStamp", (CALENDAR.getTimeInMillis()/1000)+(1*60));
         PutItemOutcome outcome = table.putItem(item);
+        return outcome;
     }
 
     private Item getItem(String email) {
@@ -85,7 +82,7 @@ static final Calendar CALENDAR = Calendar.getInstance();
                 Item item = getItem(email);
                 String tokenVal;
                 if(item == null) {
-                    putItem(email);
+                    context.getLogger().log("-----------"+putItem(email).getItem().getJSON("token"));
                     item = getItem(email);
                     tokenVal = (String)item.get("token");
                     sendEmail(email, tokenVal);
