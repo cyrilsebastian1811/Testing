@@ -22,7 +22,7 @@ import java.util.UUID;
 
 public class EmailEvent implements RequestHandler<SNSEvent, Object> {
 static final AmazonDynamoDB DYNAMO_DB = AmazonDynamoDBClientBuilder.defaultClient();
-static final AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard().withRegion(Regions.US_WEST_1).build();
+static final AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
 
 static final Calendar CALENDAR = Calendar.getInstance();
 
