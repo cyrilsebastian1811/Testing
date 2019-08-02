@@ -77,7 +77,7 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
                 return updateItem(email, table, context);
             }
         }
-        return null;
+        return item;
     }
 
     private Item updateItem(String email, Table table, Context context) {
