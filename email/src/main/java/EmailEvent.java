@@ -91,6 +91,7 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
                     context.getLogger().log("Email already Sent!");
                 }
             }catch(Exception exc){
+                exc.printStackTrace();
                 context.getLogger().log("The email was not sent. Error message: "+exc.getMessage());
             }
         }
