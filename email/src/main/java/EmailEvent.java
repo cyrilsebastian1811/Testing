@@ -87,10 +87,12 @@ static final Calendar CALENDAR = Calendar.getInstance();
                 if(item == null) {
                     putItem(email);
                     item = getItem(email);
+                    token = (String)item.get(email);
+                    sendEmail(email, token);
+                    context.getLogger().log("Email Sent!");
+                }else {
+                    context.getLogger().log("Email already Sent!");
                 }
-                token = (String)item.get(email);
-                sendEmail(email, token);
-                context.getLogger().log("Email sent!");
             }catch(Exception exc){
                 context.getLogger().log("The email was not sent. Error message: "+exc.getMessage());
             }
