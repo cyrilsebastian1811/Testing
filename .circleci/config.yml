@@ -8,7 +8,6 @@ jobs:
       - run :
           name : Install Maven
           command: |
-            echo "Hello the current build number is ${CIRCLE_BUILD_NUM}"
             sudo apt install maven
       - run:
           name: Build WAR
@@ -18,6 +17,23 @@ jobs:
             cd target
             ls -al
             cd ../..
+      - run:
+          name: Zip Artifact
+          command: |
+            echo "Hello the current build number is ${CIRCLE_BUILD_NUM}"
+            pwd
+            ls -al
+            mkdir -p lambda_artifact
+            pwd
+            ls -al
+            mv webapp/target/email-1.0-SNAPSHOT.jar lambda_artifact/
+            ls -al
+            cd lambda_artifact
+            ls -al
+            pwd
+            cd ..
+            pwd
+            ls -al
       - run :
           name : Install pip
           command: |
@@ -33,6 +49,8 @@ jobs:
           name : Upload Artifact To S3
           command : |            
             echo "Uploading to S3 bucket"
+                        cd lambda_artifact
+            aws s3 cp email-1.0-SNAPSHOT.jar s3://${AWS_CODE_DEPLOY_BUCKET}
             aws s3 cp target/email-1.0-SNAPSHOT.zip s3://${AWS_CODE_DEPLOY_BUCKET}
       # - run :
       #     name : Updating Lambda Function 
