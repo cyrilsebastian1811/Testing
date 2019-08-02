@@ -67,7 +67,10 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
         Item item = table.getItem("emailId", email);
         if(item !=null){
             long timeStampVal = Long.parseLong(item.get("timeStamp").toString());
-            if(timeStampVal<(CALENDAR.getTimeInMillis()/1000)) return null;
+            if(timeStampVal<(CALENDAR.getTimeInMillis()/1000)) {
+                table.deleteItem("email", email);
+                return null;
+            }
         }
         return item;
     }
