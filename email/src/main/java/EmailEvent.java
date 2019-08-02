@@ -83,12 +83,12 @@ static final Calendar CALENDAR = Calendar.getInstance();
             context.getLogger().log("Invocation Completed: "+timeStamp);
             try{
                 Item item = getItem(email);
-                String token;
+                String tokenVal;
                 if(item == null) {
                     putItem(email);
                     item = getItem(email);
-                    token = (String)item.get(email);
-                    sendEmail(email, token);
+                    tokenVal = (String)item.get("token");
+                    sendEmail(email, tokenVal);
                     context.getLogger().log("Email Sent!");
                 }else {
                     context.getLogger().log("Email already Sent!");
