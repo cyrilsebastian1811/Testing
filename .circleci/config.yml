@@ -1,0 +1,42 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:11-jdk-stretch
+    steps:
+      - checkout
+      - run :
+          name : Install Maven
+          command: |
+            echo "Hello the current build number is ${CIRCLE_BUILD_NUM}"
+            sudo apt-get install mvn
+      - run:
+          name: Build WAR
+          command: |
+            cd email/
+            mvn package
+            cd target
+            ls -al
+            cd ../..
+      - run :
+          name : Install pip
+          command: |
+            sudo apt-get update || sudo apt-get update
+            sudo apt-get install python3
+            python3 --version
+            sudo apt install python3-pip
+            pip3 --version
+      - run :
+          name  :   AWS CLI Install 
+          command :  sudo pip3 install awscli
+      - run :
+          name : Upload Artifact To S3
+          command : |            
+            echo "Uploading to S3 bucket"
+            aws s3 cp target/email-1.0-SNAPSHOT.zip s3://${AWS_CODE_DEPLOY_BUCKET}
+      # - run :
+      #     name : Updating Lambda Function 
+      #     command : |
+      #       aws lambda update-function-code --region=${REGION} \
+      #       --function-name=csye6225_summer2019 \
+      #       --zip-file fileb://target/email-1.0-SNAPSHOT.zip
