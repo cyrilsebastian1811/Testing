@@ -1,8 +1,5 @@
 import com.amazonaws.regions.Regions;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
-import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.SNSEvent;
@@ -18,6 +15,8 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class EmailEvent implements RequestHandler<SNSEvent, Object> {
@@ -50,11 +49,11 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
         client.sendEmail(request);
     }
 
-    private PutItemOutcome putItem(String email) {
+    private PutItemOutcome putItem(String email, Context context) {
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
         long timeStamp = (CALENDAR.getTimeInMillis()/1000)+(1*60);
-        System.out.println(timeStamp);
+        context.getLogger().log("----------------------------set"+timeStamp);
         Item item = new Item()
                 .withPrimaryKey("emailId", email)
                 .withString("token", UUID.randomUUID().toString())
@@ -63,19 +62,33 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
         return outcome;
     }
 
-    private Item getItem(String email) {
+    private Item getItem(String email, Context context) {
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
         Item item = table.getItem("emailId", email);
         if(item !=null){
             long timeStampVal = Long.parseLong(item.get("timeStamp").toString());
-            if(timeStampVal<(CALENDAR.getTimeInMillis()/1000)) {
-                System.out.println("elapsed");
-                table.deleteItem("email", email);
-                return null;
+            long currentTime = (CALENDAR.getTimeInMillis()/1000);
+            if(timeStampVal<currentTime) {
+                context.getLogger().log("----------------------------old:    "+timeStampVal);
+                context.getLogger().log("----------------------------new:    "+currentTime);
+                return updateItem(email, table, context);
             }
         }
-        return item;
+        return null;
+    }
+
+    private Item updateItem(String email, Table table, Context context) {
+        Map<String, String> expressionAttributeNames = new HashMap<String, String>();
+        expressionAttributeNames.put("#T", "token");
+
+        Map<String, Object> expressionAttributeValues = new HashMap<String, Object>();
+        expressionAttributeValues.put(":val1", UUID.randomUUID().toString());
+
+        UpdateItemOutcome outcome =  table.updateItem("emailId", email, "set #T = #T - :val1", expressionAttributeNames,
+                expressionAttributeValues);
+        context.getLogger().log(outcome.getItem().toJSON());
+        return outcome.getItem();
     }
 
     public Object handleRequest(SNSEvent snsEvent, Context context) {
@@ -88,11 +101,11 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
             String email = snsEvent.getRecords().get(0).getSNS().getMessage();
             context.getLogger().log("Record Message: "+email);
             try{
-                Item item = getItem(email);
+                Item item = getItem(email,context);
                 String tokenVal;
                 if(item == null) {
-                    putItem(email);
-                    item = getItem(email);
+                    putItem(email,context);
+                    item = getItem(email,context);
                     tokenVal = (String)item.get("token");
                     sendEmail(email, tokenVal);
                     context.getLogger().log("Email Sent!");
