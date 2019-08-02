@@ -65,8 +65,10 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
         Item item = table.getItem("emailId", email);
-        long timeSampVal = Long.parseLong(item.get("ttimeStamp").toString());
-        if(item!=null && timeSampVal<(CALENDAR.getTimeInMillis()/1000)) return null;
+        if(item !=null){
+            long timeStampVal = Long.parseLong(item.get("timeStamp").toString());
+            if(timeStampVal<(CALENDAR.getTimeInMillis()/1000)) return null;
+        }
         return item;
     }
 
