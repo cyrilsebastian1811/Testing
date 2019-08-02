@@ -21,42 +21,42 @@ import java.util.Calendar;
 import java.util.UUID;
 
 public class EmailEvent implements RequestHandler<SNSEvent, Object> {
-    static final String DOMAIN = System.getenv("domain");
+static final AmazonDynamoDB DYNAMO_DB = AmazonDynamoDBClientBuilder.defaultClient();
+static final AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard().withRegion(Regions.US_WEST_1).build();
 
-    static final String FROM = "admin@"+DOMAIN;
+static final Calendar CALENDAR = Calendar.getInstance();
 
-    // The subject line for the email.
-    static final String SUBJECT = "Password Reset";
+    private static final String DOMAIN = System.getenv("domain");
 
-    // The HTML body for the email.
-    static final String BODY = "<h1>AWS Library Management System</h1>"
+    private static final String TABLE = System.getenv("table");
+
+    private static final String FROM = "admin@"+DOMAIN;
+
+    private static final String SUBJECT = "Password Reset";
+
+    private static final String BODY = "<h1>AWS Library Management System</h1>"
             + "<h3>Actioned required</h3>"
             + "<p>You are receiving this email in response to your password reset request "
             + "for your AWS Library Management Account with LoginId: ";
 
-    static final AmazonDynamoDB DYNAMO_DB = AmazonDynamoDBClientBuilder.defaultClient();
-
-    static final Calendar CALENDAR = Calendar.getInstance();
-
-    public void sendEmail(String email, String token) throws Exception{
-        AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard().withRegion(Regions.US_WEST_1).build();
+    private void sendEmail(String email, String token) throws Exception{
+        
         String content = BODY+email+"</p><p>Link to reset password: "+
                 "<a href=\"http://"+DOMAIN+"/reset?email="+email+"&token="+token+"\"/></p>";
+
         SendEmailRequest request = new SendEmailRequest().withDestination(new Destination().withToAddresses(email))
                 .withMessage(new Message()
                         .withBody(new Body()
-                                .withHtml(new Content().withCharset("UTF-8").withData(content)))
-//                                .withText(new Content()
-//                                        .withCharset("UTF-8").withData(TEXTBODY+email+" \nLink to reset password"+
-//                                                "<a href=\"http://"+DOMAIN+"/reset?email="+email+"&token="+token+"\"/>")))
+                                .withHtml(new Content().withCharset("UTF-8").withData(content))
+                               .withText(new Content().withCharset("UTF-8").withData(content)))
                         .withSubject(new Content().withCharset("UTF-8").withData(SUBJECT)))
                 .withSource(FROM);
         client.sendEmail(request);
     }
 
-    public void putItem(String email) {
+    private void putItem(String email) {
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
-        Table table = dynamoDB.getTable("csye6225");
+        Table table = dynamoDB.getTable(TABLE);
         Item item = new Item()
                 .withPrimaryKey("username", email)
                 .withString("token", UUID.randomUUID().toString())
@@ -64,9 +64,9 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
         PutItemOutcome outcome = table.putItem(item);
     }
 
-    public Item getItem(String email) {
+    private Item getItem(String email) {
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
-        Table table = dynamoDB.getTable("csye6225");
+        Table table = dynamoDB.getTable(TABLE);
         return table.getItem("username", email);
     }
 
