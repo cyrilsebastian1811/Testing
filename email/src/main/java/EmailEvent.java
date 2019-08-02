@@ -85,6 +85,7 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
                 Item item = getItem(email);
                 String tokenVal;
                 if(item == null) {
+                    putItem(email);
                     item = getItem(email);
                     tokenVal = (String)item.get("token");
                     sendEmail(email, tokenVal);
