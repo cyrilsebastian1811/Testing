@@ -58,7 +58,7 @@ static final Calendar CALENDAR = Calendar.getInstance();
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
         Item item = new Item()
-                .withPrimaryKey("username", email)
+                .withPrimaryKey("emailId", email)
                 .withString("token", UUID.randomUUID().toString())
                 .withNumber("timeStamp", CALENDAR.getTimeInMillis()/1000+(15*60));
         PutItemOutcome outcome = table.putItem(item);
@@ -67,7 +67,7 @@ static final Calendar CALENDAR = Calendar.getInstance();
     private Item getItem(String email) {
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
-        return table.getItem("username", email);
+        return table.getItem("emailId", email);
     }
 
     public Object handleRequest(SNSEvent snsEvent, Context context) {

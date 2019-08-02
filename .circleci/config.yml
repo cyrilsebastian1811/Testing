@@ -17,23 +17,6 @@ jobs:
             cd target
             ls -al
             pwd
-      # - run:
-      #     name: Zip Artifact
-      #     command: |
-      #       echo "Hello the current build number is ${CIRCLE_BUILD_NUM}"
-      #       pwd
-      #       ls -al
-      #       mkdir -p lambda_artifact
-      #       pwd
-      #       ls -al
-      #       mv webapp/target/email-1.0-SNAPSHOT.jar lambda_artifact/
-      #       ls -al
-      #       cd lambda_artifact
-      #       ls -al
-      #       pwd
-      #       cd ..
-      #       pwd
-      #       ls -al
       - run:
           name: Install pip
           command: |
@@ -56,4 +39,4 @@ jobs:
           name : Updating Lambda Function 
           command : |
             cd email/target
-            aws lambda update-function-code --region=${AWS_REGION} --function-name=csye6225_summer2019 --zip-file fileb://email-1.0-SNAPSHOT.jar
+            aws lambda update-function-code --region=${AWS_REGION} --function-name=csye6225 --zip-file fileb://email-1.0-SNAPSHOT.jar
