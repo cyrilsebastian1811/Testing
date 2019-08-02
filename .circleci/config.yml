@@ -51,7 +51,7 @@ jobs:
             echo "Uploading to S3 bucket"
             # cd lambda_artifact
             # aws s3 cp email-1.0-SNAPSHOT.jar s3://${AWS_CODE_DEPLOY_BUCKET}
-            aws s3 cp target/email-1.0-SNAPSHOT.zip s3://${AWS_CODE_DEPLOY_BUCKET}
+            aws s3 cp target/email-1.0-SNAPSHOT.jar s3://${AWS_CODE_DEPLOY_BUCKET}
       # - run :
       #     name : Updating Lambda Function 
       #     command : |
