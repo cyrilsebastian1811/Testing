@@ -21,7 +21,7 @@ import java.util.Calendar;
 import java.util.UUID;
 
 public class EmailEvent implements RequestHandler<SNSEvent, Object> {
-    static final AmazonDynamoDB DYNAMO_DB = AmazonDynamoDBClientBuilder.defaultClient();
+    static final AmazonDynamoDB DYNAMO_DB = AmazonDynamoDBClientBuilder.standard().build();
     static final AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
 
     static final Calendar CALENDAR = Calendar.getInstance();
@@ -64,7 +64,10 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
     private Item getItem(String email) {
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
-        return table.getItem("emailId", email);
+        Item item = table.getItem("emailId", email);
+        long timeSampVal = Long.parseLong(item.get("ttimeStamp").toString());
+        if(item!=null && timeSampVal<(CALENDAR.getTimeInMillis()/1000)) return null;
+        return item;
     }
 
     public Object handleRequest(SNSEvent snsEvent, Context context) {
