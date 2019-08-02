@@ -81,8 +81,6 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
             context.getLogger().log("Number of Records: "+snsEvent.getRecords().size());
             String email = snsEvent.getRecords().get(0).getSNS().getMessage();
             context.getLogger().log("Record Message: "+email);
-            timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(Calendar.getInstance().getTime());
-            context.getLogger().log("Invocation Completed: "+timeStamp);
             try{
                 Item item = getItem(email);
                 String tokenVal;
@@ -99,6 +97,8 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
                 context.getLogger().log("The email was not sent. Error message: "+exc.getMessage());
             }
         }
+        timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(Calendar.getInstance().getTime());
+        context.getLogger().log("Invocation Completed: "+timeStamp);
         return null;
     }
 }
