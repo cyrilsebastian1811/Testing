@@ -53,10 +53,12 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
     private PutItemOutcome putItem(String email) {
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
+        long timeStamp = (CALENDAR.getTimeInMillis()/1000)+(1*60);
+        System.out.println(timeStamp);
         Item item = new Item()
                 .withPrimaryKey("emailId", email)
                 .withString("token", UUID.randomUUID().toString())
-                .withNumber("timeStamp", (CALENDAR.getTimeInMillis()/1000)+(1*60));
+                .withNumber("timeStamp", timeStamp);
         PutItemOutcome outcome = table.putItem(item);
         return outcome;
     }
@@ -68,6 +70,7 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
         if(item !=null){
             long timeStampVal = Long.parseLong(item.get("timeStamp").toString());
             if(timeStampVal<(CALENDAR.getTimeInMillis()/1000)) {
+                System.out.println("elapsed");
                 table.deleteItem("email", email);
                 return null;
             }
