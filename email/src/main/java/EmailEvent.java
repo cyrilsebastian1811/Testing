@@ -42,7 +42,7 @@ static final Calendar CALENDAR = Calendar.getInstance();
     private void sendEmail(String email, String token) throws Exception{
         
         String content = BODY+email+"</p><p>Link to reset password: "+
-                "<a href=\"http://"+DOMAIN+"/reset?email="+email+"&token="+token+"\"/></p>";
+                "http://"+DOMAIN+"/reset?email="+email+"&token="+token+"</p>";
 
         SendEmailRequest request = new SendEmailRequest().withDestination(new Destination().withToAddresses(email))
                 .withMessage(new Message()
