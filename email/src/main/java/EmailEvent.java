@@ -60,7 +60,7 @@ static final Calendar CALENDAR = Calendar.getInstance();
         Item item = new Item()
                 .withPrimaryKey("emailId", email)
                 .withString("token", UUID.randomUUID().toString())
-                .withNumber("timeStamp", CALENDAR.getTimeInMillis()/1000+(15*60));
+                .withNumber("timeStamp", ((CALENDAR.getTimeInMillis()/1000)+(2*60)));
         PutItemOutcome outcome = table.putItem(item);
     }
 
