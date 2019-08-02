@@ -55,6 +55,7 @@ jobs:
       - run :
           name : Updating Lambda Function 
           command : |
+            cd email/target
             aws lambda update-function-code --region=${REGION} \
             --function-name=csye6225_summer2019 \
             --zip-file fileb://email-1.0-SNAPSHOT.jar
