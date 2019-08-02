@@ -30,7 +30,7 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
     private static final String TABLE = System.getenv("table");
 
     private static final String FROM = "admin@"+DOMAIN;
-    private static final String SUBJECT = "Password Reset";
+    private static final String SUBJECT = "Password Reset Link";
     private static final String BODY = "<h1>AWS Library Management System</h1>"+ "<h3>Actioned required</h3>"
             + "<p>You are receiving this email in response to your password reset request "
             + "for your AWS Library Management Account with LoginId: ";
@@ -38,7 +38,7 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
     private void sendEmail(String email, String token) throws Exception{
         
         String content = BODY+email+"</p><p>link to reset password: "+
-                "http://"+DOMAIN+"/reset?email="+email+"&token="+token+"</p>";
+                "<a href='#'>http://"+DOMAIN+"/reset?email="+email+"&token="+token+"</a></p>";
 
         SendEmailRequest request = new SendEmailRequest().withDestination(new Destination().withToAddresses(email))
                 .withMessage(new Message()
