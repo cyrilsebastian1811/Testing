@@ -111,8 +111,8 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
 
                 long timeStampVal = Long.parseLong(item.get("timeStamp").toString());
                 long currentTime = (CALENDAR.getTimeInMillis()/1000);
-                context.getLogger().log("----------------------------old:    "+timeStampVal);
-                context.getLogger().log("----------------------------new:    "+currentTime);
+                context.getLogger().log("----------------------------timeStamp: "+timeStampVal);
+                context.getLogger().log("----------------------------current: "+currentTime);
                 if(timeStampVal<currentTime){
                     updateItem(email, context);
                     item = getItem(email,context);
