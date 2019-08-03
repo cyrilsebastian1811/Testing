@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class EmailEvent implements RequestHandler<SNSEvent, Object> {
-    static final AmazonDynamoDB DYNAMO_DB = AmazonDynamoDBClientBuilder.standard().build();
+    static final AmazonDynamoDB DYNAMO_DB = AmazonDynamoDBClientBuilder.defaultClient();
     static final AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
 
     static final Calendar CALENDAR = Calendar.getInstance();
@@ -52,13 +52,15 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
     private Item putItem(String email, Context context) {
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
-        long timeStamp = (CALENDAR.getTimeInMillis()/1000)+(1*60);
+        long timeStamp = (CALENDAR.getTimeInMillis()/1000)+(2*60);
+        context.getLogger().log("----------------------------set"+(CALENDAR.getTimeInMillis()/1000));
         context.getLogger().log("----------------------------set"+timeStamp);
         Item item = new Item()
                 .withPrimaryKey("emailId", email)
                 .withString("token", UUID.randomUUID().toString())
                 .withNumber("timeStamp", timeStamp);
         PutItemOutcome outcome = table.putItem(item);
+        if(outcome.getItem()==null) context.getLogger().log("NULL");
         context.getLogger().log(outcome.getItem().toJSON());
         return outcome.getItem();
     }
@@ -73,14 +75,17 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
     private Item updateItem(String email, Context context) {
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
+        long timeStamp = (CALENDAR.getTimeInMillis()/1000)+(2*60);
 
         Map<String, String> expressionAttributeNames = new HashMap<String, String>();
         expressionAttributeNames.put("#T", "token");
+        expressionAttributeNames.put("#S", "timeStamp");
 
         Map<String, Object> expressionAttributeValues = new HashMap<String, Object>();
         expressionAttributeValues.put(":val1", UUID.randomUUID().toString());
+        expressionAttributeValues.put(":val2", timeStamp);
 
-        UpdateItemOutcome outcome =  table.updateItem("emailId", email, "set #T = :val1", expressionAttributeNames,
+        UpdateItemOutcome outcome =  table.updateItem("emailId", email, "set #T = :val1, #S = :val2", expressionAttributeNames,
                 expressionAttributeValues);
         context.getLogger().log(outcome.getItem().toJSON());
         return outcome.getItem();
