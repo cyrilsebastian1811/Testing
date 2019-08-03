@@ -59,6 +59,7 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
                 .withString("token", UUID.randomUUID().toString())
                 .withNumber("timeStamp", timeStamp);
         PutItemOutcome outcome = table.putItem(item);
+        context.getLogger().log(outcome.getItem().toJSON());
         return outcome.getItem();
     }
 
