@@ -49,7 +49,7 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
         client.sendEmail(request);
     }
 
-    private PutItemOutcome putItem(String email, Context context) {
+    private Item putItem(String email, Context context) {
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
         long timeStamp = (CALENDAR.getTimeInMillis()/1000)+(1*60);
@@ -59,24 +59,13 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
                 .withString("token", UUID.randomUUID().toString())
                 .withNumber("timeStamp", timeStamp);
         PutItemOutcome outcome = table.putItem(item);
-        return outcome;
+        return outcome.getItem();
     }
 
     private Item getItem(String email, Context context) {
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
         Item item = table.getItem("emailId", email);
-        if(item !=null){
-            long timeStampVal = Long.parseLong(item.get("timeStamp").toString());
-            long currentTime = (CALENDAR.getTimeInMillis()/1000);
-            context.getLogger().log("----------------------------old:    "+timeStampVal);
-            context.getLogger().log("----------------------------new:    "+currentTime);
-            if(timeStampVal<currentTime) {
-                context.getLogger().log("----------------------------old:    "+timeStampVal);
-                context.getLogger().log("----------------------------new:    "+currentTime);
-                return updateItem(email, table, context);
-            }
-        }
         return item;
     }
 
@@ -87,7 +76,7 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
         Map<String, Object> expressionAttributeValues = new HashMap<String, Object>();
         expressionAttributeValues.put(":val1", UUID.randomUUID().toString());
 
-        UpdateItemOutcome outcome =  table.updateItem("emailId", email, "set #T = #T - :val1", expressionAttributeNames,
+        UpdateItemOutcome outcome =  table.updateItem("emailId", email, "set #T = :val1", expressionAttributeNames,
                 expressionAttributeValues);
         context.getLogger().log(outcome.getItem().toJSON());
         return outcome.getItem();
@@ -105,14 +94,18 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
             try{
                 Item item = getItem(email,context);
                 String tokenVal;
-                if(item == null) {
-                    putItem(email,context);
-                    item = getItem(email,context);
+                if(item == null) item = putItem(email,context);
+
+                long timeStampVal = Long.parseLong(item.get("timeStamp").toString());
+                long currentTime = (CALENDAR.getTimeInMillis()/1000);
+                context.getLogger().log("----------------------------old:    "+timeStampVal);
+                context.getLogger().log("----------------------------new:    "+currentTime);
+                if(timeStampVal<currentTime){
                     tokenVal = (String)item.get("token");
                     sendEmail(email, tokenVal);
                     context.getLogger().log("Email Sent!");
                 }else {
-                    context.getLogger().log("Email already Sent!");
+                    context.getLogger().log("Email Sent already!");
                 }
             }catch(Exception exc){
                 exc.printStackTrace();
