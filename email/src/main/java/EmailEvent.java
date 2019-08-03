@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class EmailEvent implements RequestHandler<SNSEvent, Object> {
-    static final AmazonDynamoDB DYNAMO_DB = AmazonDynamoDBClientBuilder.defaultClient();
+    static final AmazonDynamoDB DYNAMO_DB = AmazonDynamoDBClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
     static final AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
 
     static final Calendar CALENDAR = Calendar.getInstance();
@@ -49,7 +49,7 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
         client.sendEmail(request);
     }
 
-    private Item putItem(String email, Context context) {
+    private void putItem(String email, Context context) {
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
         long timeStamp = (CALENDAR.getTimeInMillis()/1000)+(2*60);
@@ -60,9 +60,6 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
                 .withString("token", UUID.randomUUID().toString())
                 .withNumber("timeStamp", timeStamp);
         PutItemOutcome outcome = table.putItem(item);
-        if(outcome.getItem()==null) context.getLogger().log("NULL");
-        context.getLogger().log(outcome.getItem().toJSON());
-        return outcome.getItem();
     }
 
     private Item getItem(String email, Context context) {
@@ -104,7 +101,8 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
                 Item item = getItem(email,context);
                 String tokenVal;
                 if(item == null) {
-                    item = putItem(email,context);
+                    putItem(email,context);
+                    item = getItem(email,context);
                     tokenVal = (String)item.get("token");
                     sendEmail(email, tokenVal);
                     context.getLogger().log("Email Sent!");
@@ -123,9 +121,6 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
                     sendEmail(email, tokenVal);
                     context.getLogger().log("Email Sent!");
                 }else {
-                    tokenVal = (String)item.get("token");
-                    sendEmail(email, tokenVal);
-                    context.getLogger().log("Email Sent!");
                     context.getLogger().log("Email Sent already!");
                 }
             }catch(Exception exc){
