@@ -53,8 +53,8 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
         long timeStamp = (CALENDAR.getTimeInMillis()/1000)+(2*60);
-        context.getLogger().log("----------------------------set"+(CALENDAR.getTimeInMillis()/1000));
-        context.getLogger().log("----------------------------set"+timeStamp);
+        context.getLogger().log("----------------------------TimeStamp_Set"+timeStamp);
+        context.getLogger().log("----------------------------Current_Set"+(CALENDAR.getTimeInMillis()/1000));
         Item item = new Item()
                 .withPrimaryKey("emailId", email)
                 .withString("token", UUID.randomUUID().toString())
@@ -111,8 +111,8 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
 
                 long timeStampVal = Long.parseLong(item.get("timeStamp").toString());
                 long currentTime = (CALENDAR.getTimeInMillis()/1000);
-                context.getLogger().log("----------------------------timeStamp: "+timeStampVal);
-                context.getLogger().log("----------------------------current: "+currentTime);
+                context.getLogger().log("----------------------------TimeStamp_Set"+timeStamp);
+                context.getLogger().log("----------------------------Current_Set"+(CALENDAR.getTimeInMillis()/1000));
                 if(timeStampVal<currentTime){
                     updateItem(email, context);
                     item = getItem(email,context);
