@@ -69,7 +69,7 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
         return item;
     }
 
-    private Item updateItem(String email, Context context) {
+    private void updateItem(String email, Context context) {
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
         long timeStamp = (CALENDAR.getTimeInMillis()/1000)+(2*60);
@@ -84,8 +84,6 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
 
         UpdateItemOutcome outcome =  table.updateItem("emailId", email, "set #T = :val1, #S = :val2", expressionAttributeNames,
                 expressionAttributeValues);
-        context.getLogger().log(outcome.getItem().toJSON());
-        return outcome.getItem();
     }
 
     public Object handleRequest(SNSEvent snsEvent, Context context) {
@@ -116,7 +114,8 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
                 context.getLogger().log("----------------------------old:    "+timeStampVal);
                 context.getLogger().log("----------------------------new:    "+currentTime);
                 if(timeStampVal<currentTime){
-                    item = updateItem(email, context);
+                    updateItem(email, context);
+                    item = getItem(email,context);
                     tokenVal = (String)item.get("token");
                     sendEmail(email, tokenVal);
                     context.getLogger().log("Email Sent!");
