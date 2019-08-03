@@ -50,11 +50,12 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
     }
 
     private void putItem(String email, Context context) {
+        context.getLogger().log("----In Put");
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
         long timeStamp = (CALENDAR.getTimeInMillis()/1000)+(2*60);
-        context.getLogger().log("----------------------------TimeStamp_Set"+timeStamp);
-        context.getLogger().log("----------------------------Current_Set"+(CALENDAR.getTimeInMillis()/1000));
+        context.getLogger().log("----------------------------TimeStamp_Set: "+timeStamp);
+        context.getLogger().log("----------------------------Current_Set: "+(CALENDAR.getTimeInMillis()/1000));
         Item item = new Item()
                 .withPrimaryKey("emailId", email)
                 .withString("token", UUID.randomUUID().toString())
@@ -63,6 +64,7 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
     }
 
     private Item getItem(String email, Context context) {
+        context.getLogger().log("----In Get");
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
         Item item = table.getItem("emailId", email);
@@ -70,6 +72,7 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
     }
 
     private void updateItem(String email, Context context) {
+        context.getLogger().log("----In Update");
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
         long timeStamp = (CALENDAR.getTimeInMillis()/1000)+(2*60);
