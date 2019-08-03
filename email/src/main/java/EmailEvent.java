@@ -70,7 +70,10 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
         return item;
     }
 
-    private Item updateItem(String email, Table table, Context context) {
+    private Item updateItem(String email, Context context) {
+        DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
+        Table table = dynamoDB.getTable(TABLE);
+
         Map<String, String> expressionAttributeNames = new HashMap<String, String>();
         expressionAttributeNames.put("#T", "token");
 
@@ -95,17 +98,29 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
             try{
                 Item item = getItem(email,context);
                 String tokenVal;
-                if(item == null) item = putItem(email,context);
+                if(item == null) {
+                    item = putItem(email,context);
+                    tokenVal = (String)item.get("token");
+                    sendEmail(email, tokenVal);
+                    context.getLogger().log("Email Sent!");
+                    timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(Calendar.getInstance().getTime());
+                    context.getLogger().log("Invocation Completed: "+timeStamp);
+                    return null;
+                }
 
                 long timeStampVal = Long.parseLong(item.get("timeStamp").toString());
                 long currentTime = (CALENDAR.getTimeInMillis()/1000);
                 context.getLogger().log("----------------------------old:    "+timeStampVal);
                 context.getLogger().log("----------------------------new:    "+currentTime);
                 if(timeStampVal<currentTime){
+                    item = updateItem(email, context);
                     tokenVal = (String)item.get("token");
                     sendEmail(email, tokenVal);
                     context.getLogger().log("Email Sent!");
                 }else {
+                    tokenVal = (String)item.get("token");
+                    sendEmail(email, tokenVal);
+                    context.getLogger().log("Email Sent!");
                     context.getLogger().log("Email Sent already!");
                 }
             }catch(Exception exc){
