@@ -12,6 +12,7 @@ import com.amazonaws.services.simpleemail.model.Message;
 import com.amazonaws.services.simpleemail.model.SendEmailRequest;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import org.joda.time.Instant;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -23,7 +24,7 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
     static final AmazonDynamoDB DYNAMO_DB = AmazonDynamoDBClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
     static final AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
 
-    static final Calendar CALENDAR = Calendar.getInstance();
+//    static final Calendar CALENDAR = Calendar.getInstance();
 
     private static final String DOMAIN = System.getenv("domain");
     private static final String TABLE = System.getenv("table");
@@ -53,9 +54,9 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
         context.getLogger().log("----In Put");
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
-        long timeStamp = (CALENDAR.getTimeInMillis()/1000)+(2*60);
+        long timeStamp = (Instant.now().getMillis()/1000L)+(2*60);
         context.getLogger().log("----------------------------TimeStamp_Set: "+timeStamp);
-        context.getLogger().log("----------------------------Current_Set: "+(CALENDAR.getTimeInMillis()/1000));
+        context.getLogger().log("----------------------------Current_Set: "+(Instant.now().getMillis()/1000));
         Item item = new Item()
                 .withPrimaryKey("emailId", email)
                 .withString("token", UUID.randomUUID().toString())
@@ -75,7 +76,7 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
         context.getLogger().log("----In Update");
         DynamoDB dynamoDB = new DynamoDB(DYNAMO_DB);
         Table table = dynamoDB.getTable(TABLE);
-        long timeStamp = (CALENDAR.getTimeInMillis()/1000)+(2*60);
+        long timeStamp = (Instant.now().getMillis()/1000L)+(2*60);
 
         Map<String, String> expressionAttributeNames = new HashMap<String, String>();
         expressionAttributeNames.put("#T", "token");
@@ -113,9 +114,9 @@ public class EmailEvent implements RequestHandler<SNSEvent, Object> {
                 }
 
                 long timeStampVal = Long.parseLong(item.get("timeStamp").toString());
-                long currentTime = (CALENDAR.getTimeInMillis()/1000);
+                long currentTime = (Instant.now().getMillis()/1000L);
                 context.getLogger().log("----------------------------TimeStamp_Set: "+timeStampVal);
-                context.getLogger().log("----------------------------Current_Set: "+(CALENDAR.getTimeInMillis()/1000));
+                context.getLogger().log("----------------------------Current_Set: "+(Instant.now().getMillis()/1000L));
                 if(timeStampVal<currentTime){
                     updateItem(email, context);
                     item = getItem(email,context);
