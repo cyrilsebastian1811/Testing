@@ -36,11 +36,11 @@ pipeline {
                 echo "${git_hash}"
             }
         }
-        stage('Build') { 
-            steps {
-                // 
-            }
-        }
+        // stage('Build') { 
+        //     steps {
+        //         // 
+        //     }
+        // }
         // stage('Deploy') { 
         //     steps {
         //         // 
