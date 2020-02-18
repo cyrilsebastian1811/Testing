@@ -15,18 +15,20 @@ pipeline {
         stage('Environment variables') { 
             steps {
                 echo "BUILD NUMBER: ${env.BUILD_NUMBER}"
+                echo "${env}"
             }
         }
         stage('Checkout') { 
+            checkout([
+                $class: 'GitSCM', branches: [[name: '*/a1']], 
+                doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [],
+                    userRemoteConfigs: [[
+                        credentialsId: 'github-ssh', 
+                        url: 'git@github.com:cyrilsebastian1811/Testing.git'
+                ]]
+            ])
             steps {
-                GIT_COMMIT = checkout([
-                    $class: 'GitSCM', branches: [[name: '*/a1']], 
-                    doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [],
-                     userRemoteConfigs: [[
-                         credentialsId: 'github-ssh', 
-                         url: 'git@github.com:cyrilsebastian1811/Testing.git'
-                    ]]
-                ]).GIT_COMMIT
+
             }
         }
         // stage('Build') { 
