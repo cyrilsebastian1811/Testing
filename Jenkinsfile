@@ -12,12 +12,6 @@ pipeline {
         // DOCKERHUB_CREDENTIALS_USR and DOCKERHUB_CREDENTIALS_PSW automatically available
     }
     stages {
-        stage('Environment variables') { 
-            steps {
-                echo "BUILD NUMBER: ${env.BUILD_NUMBER}"
-                echo "${env.GIT_COMMIT}"
-            }
-        }
         stage('Checkout') { 
             steps {
                 script {
@@ -46,7 +40,7 @@ pipeline {
         stage('Push Image') { 
             steps {
                 script {
-                    def docker_info = docker.withRegistry("https://hub.docker.com/", DOCKERHUB_CREDENTIALS) {
+                    def docker_info = docker.withRegistry("https://hub.docker.com/", "$DOCKERHUB_CREDENTIALS") {
                         image.push("latest")
                     }
                 }
