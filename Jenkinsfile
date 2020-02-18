@@ -29,11 +29,11 @@ pipeline {
                             url: 'git@github.com:cyrilsebastian1811/Testing.git'
                         ]]
                     ])
-                    git_hash = "${git_info.GIT_COMMIT}"
+                    git_hash = "${git_info.GIT_COMMIT[0..6]}"
                     // git_hash = sh(returnStdout: true, script: "echo $git_hash" ).trim()
                 }
 
-                echo "${git_hash[0..6]}"
+                echo "${git_hash}"
             }
         }
         stage('Build Image') { 
