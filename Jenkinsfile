@@ -30,7 +30,8 @@ pipeline {
                         ]]
                     ])
                 }
-                
+
+                echo "${git_var}"
                 echo "${env.GIT_COMMIT}"
             }
         }
