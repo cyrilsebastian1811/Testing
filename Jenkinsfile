@@ -15,7 +15,7 @@ pipeline {
         stage('Environment variables') { 
             steps {
                 echo "BUILD NUMBER: ${env.BUILD_NUMBER}"
-                echo "${env}"
+                echo "${env.GIT_COMMIT}"
             }
         }
         stage('Checkout') { 
@@ -28,6 +28,8 @@ pipeline {
                             url: 'git@github.com:cyrilsebastian1811/Testing.git'
                     ]]
                 ])
+
+                echo "${env.GIT_COMMIT}"
             }
         }
         // stage('Build') { 
