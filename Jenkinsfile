@@ -20,7 +20,7 @@ pipeline {
         }
         stage('Checkout') { 
             steps {
-                checkout([
+                def git_var = checkout([
                     $class: 'GitSCM', branches: [[name: '*/a1']], 
                     doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [],
                         userRemoteConfigs: [[
