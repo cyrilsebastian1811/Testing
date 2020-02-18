@@ -29,10 +29,10 @@ pipeline {
                         ]]
                     ])
                     git_hash = "${git_info.GIT_COMMIT}"
-                    git_hash = sh(returnStdout: true, script: "echo $git_hash" ).trim()
+                    // git_hash = sh(returnStdout: true, script: "echo $git_hash" ).trim()
                 }
 
-                echo "${git_hash}"
+                echo "${git_hash[0:8]}"
             }
         }
         // stage('Build') { 
