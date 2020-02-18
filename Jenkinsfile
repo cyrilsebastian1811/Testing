@@ -15,6 +15,7 @@ pipeline {
         stage('Environment variables') { 
             steps {
                 echo $env
+                echo "BUILD NUMBER: ${env.BUILD_NUMBER}"
             }
         }
         stage('Checkout') { 
