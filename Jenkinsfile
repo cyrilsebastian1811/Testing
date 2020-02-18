@@ -32,7 +32,7 @@ pipeline {
                 }
 
                 echo "${git_info}"
-                echo "${env.GIT_COMMIT}"
+                echo "${git_info.GIT_COMMIT}"
             }
         }
         // stage('Build') { 
