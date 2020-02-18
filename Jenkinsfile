@@ -19,7 +19,7 @@ pipeline {
         }
         stage('Checkout') { 
             steps {
-                git_info = checkout([
+                checkout([
                     $class: 'GitSCM', branches: [[name: '*/a1']], 
                     doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [],
                      userRemoteConfigs: [[
@@ -27,8 +27,6 @@ pipeline {
                          url: 'git@github.com:cyrilsebastian1811/Testing.git'
                     ]]
                 ])
-
-                // echo $git_info
             }
         }
         // stage('Build') { 
