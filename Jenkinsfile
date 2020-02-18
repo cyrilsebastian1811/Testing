@@ -39,9 +39,12 @@ pipeline {
         stage('Push Image') { 
             steps {
                 script {
-                    def docker_info = docker.withRegistry("https://registry.hub.docker.com/", "$DOCKERHUB_CREDENTIALS") {
+                    def docker_info = docker.withRegistry("https://registry.hub.docker.com/", "dockerhub_credentials") {
                         image.push("latest")
                     }
+                    // def docker_info = docker.withRegistry("https://registry.hub.docker.com/", "$DOCKERHUB_CREDENTIALS") {
+                    //     image.push("latest")
+                    // }
                 }
             }
         }
