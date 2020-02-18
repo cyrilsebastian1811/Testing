@@ -39,18 +39,15 @@ pipeline {
         stage('Push Image') { 
             steps {
                 script {
-                    def docker_info = docker.withRegistry("https://registry.hub.docker.com/", "dockerhub_credentials") {
+                    def docker_info = docker.withRegistry("https://hub.docker.com/", "dockerhub_credentials") {
                         image.push("latest")
                     }
-                    // def docker_info = docker.withRegistry("https://registry.hub.docker.com/", "$DOCKERHUB_CREDENTIALS") {
-                    //     image.push("latest")
-                    // }
                 }
             }
         }
         stage('Remove Images') { 
             steps {
-                sh "docker system prune --all"
+                sh "docker system prune --all -y"
             }
         }
     }
