@@ -7,7 +7,6 @@ pipeline {
     }
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub_credentials')
-        GIT_COMMIT = null
         git_hash = null
         // DOCKERHUB_CREDENTIALS_USR and DOCKERHUB_CREDENTIALS_PSW automatically available
     }
@@ -30,7 +29,7 @@ pipeline {
                         ]]
                     ])
 
-                    git_hash = sh(returnStdout: true, script: 'echo '+git_info.GIT_COMMIT).trim()
+                    git_hash = sh(returnStdout: true, script: 'echo ${git_info.GIT_COMMIT}').trim()
                 }
 
                 echo "${git_hash}"
