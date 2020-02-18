@@ -8,7 +8,7 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub_credentials')
         GIT_COMMIT = null
-        git_info = null
+        git_hash = null
         // DOCKERHUB_CREDENTIALS_USR and DOCKERHUB_CREDENTIALS_PSW automatically available
     }
     stages {
@@ -29,17 +29,18 @@ pipeline {
                             url: 'git@github.com:cyrilsebastian1811/Testing.git'
                         ]]
                     ])
+
+                    git_hash = sh(returnStdout: true, script: 'echo '+git_info.GIT_COMMIT).trim()
                 }
 
-                echo "${git_info}"
-                echo "${git_info.GIT_COMMIT}"
+                echo "${git_hash}"
             }
         }
-        // stage('Build') { 
-        //     steps {
-        //         // 
-        //     }
-        // }
+        stage('Build') { 
+            steps {
+                // 
+            }
+        }
         // stage('Deploy') { 
         //     steps {
         //         // 
