@@ -14,6 +14,11 @@ pipeline {
     stages {
         stage('Environment variables') { 
             steps {
+                echo $env
+            }
+        }
+        stage('Checkout') { 
+            steps {
                 git_info = checkout([
                     $class: 'GitSCM', branches: [[name: '*/a1']], 
                     doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [],
@@ -23,23 +28,18 @@ pipeline {
                     ]]
                 ])
 
-                echo $git_info
+                // echo $git_info
             }
         }
-        stage('Checkout') { 
-            steps {
-                
-            }
-        }
-        stage('Build') { 
-            steps {
-                // 
-            }
-        }
-        stage('Deploy') { 
-            steps {
-                // 
-            }
-        }
+        // stage('Build') { 
+        //     steps {
+        //         // 
+        //     }
+        // }
+        // stage('Deploy') { 
+        //     steps {
+        //         // 
+        //     }
+        // }
     }
 }
