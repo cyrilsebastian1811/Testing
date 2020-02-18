@@ -32,7 +32,7 @@ pipeline {
                     // git_hash = sh(returnStdout: true, script: "echo $git_hash" ).trim()
                 }
 
-                echo "${git_hash[0:8]}"
+                echo "${git_hash,length=6}"
             }
         }
         // stage('Build') { 
