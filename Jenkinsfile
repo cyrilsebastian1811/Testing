@@ -39,7 +39,7 @@ pipeline {
         stage('Push Image') { 
             steps {
                 script {
-                    def docker_info = docker.withRegistry("https://hub.docker.com/", "dockerhub_credentials") {
+                    def docker_info = docker.withRegistry("https://registry.hub.docker.com/", "dockerhub_credentials") {
                         image.push("latest")
                     }
                 }
