@@ -31,7 +31,7 @@ pipeline {
                     ])
                 }
 
-                echo "${git_var}"
+                echo "${git_info}"
                 echo "${env.GIT_COMMIT}"
             }
         }
