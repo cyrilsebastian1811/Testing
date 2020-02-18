@@ -19,14 +19,14 @@ pipeline {
         }
         stage('Checkout') { 
             steps {
-                checkout([
+                GIT_COMMIT = checkout([
                     $class: 'GitSCM', branches: [[name: '*/a1']], 
                     doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [],
                      userRemoteConfigs: [[
                          credentialsId: 'github-ssh', 
                          url: 'git@github.com:cyrilsebastian1811/Testing.git'
                     ]]
-                ])
+                ]).GIT_COMMIT
             }
         }
         // stage('Build') { 
