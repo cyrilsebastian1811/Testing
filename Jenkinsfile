@@ -24,7 +24,6 @@ pipeline {
                         ]]
                     ])
                     git_hash = "${git_info.GIT_COMMIT[0..6]}"
-                    // git_hash = sh(returnStdout: true, script: "echo $git_hash" ).trim()
                 }
 
                 echo "${git_hash}"
@@ -40,7 +39,7 @@ pipeline {
         stage('Push Image') { 
             steps {
                 script {
-                    def docker_info = docker.withRegistry("https://hub.docker.com/", "$DOCKERHUB_CREDENTIALS") {
+                    def docker_info = docker.withRegistry("https://registry.hub.docker.com/", "$DOCKERHUB_CREDENTIALS") {
                         image.push("latest")
                     }
                 }
