@@ -20,15 +20,16 @@ pipeline {
         }
         stage('Checkout') { 
             steps {
-                def git_var = checkout([
-                    $class: 'GitSCM', branches: [[name: '*/a1']], 
-                    doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [],
+                script {
+                    def git_var = checkout([
+                        $class: 'GitSCM', branches: [[name: '*/a1']], 
+                        doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [],
                         userRemoteConfigs: [[
                             credentialsId: 'github-ssh', 
                             url: 'git@github.com:cyrilsebastian1811/Testing.git'
-                    ]]
-                ])
-
+                        ]]
+                    ])
+                }
                 echo "${env.GIT_COMMIT}"
             }
         }
