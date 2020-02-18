@@ -1,6 +1,5 @@
 // Jenkinsfile (Declarative Pipeline)
 pipeline {
-    // agent any
     agent any
     options {
         skipDefaultCheckout(true)
@@ -32,7 +31,7 @@ pipeline {
         stage('Build Image') { 
             steps {
                 script {
-                    image = docker.build("${DOCKERHUB_CREDENTIALS_USR}/${git_hash}")
+                    image = docker.build("${DOCKERHUB_CREDENTIALS_USR}/testing")
                 }
             }
         }
@@ -40,7 +39,7 @@ pipeline {
             steps {
                 script {
                     def docker_info = docker.withRegistry("https://registry.hub.docker.com/", "dockerhub_credentials") {
-                        image.push("latest")
+                        image.push("${git_hash}")
                     }
                 }
             }
