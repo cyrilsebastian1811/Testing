@@ -30,6 +30,7 @@ pipeline {
                         ]]
                     ])
                 }
+                
                 echo "${env.GIT_COMMIT}"
             }
         }
