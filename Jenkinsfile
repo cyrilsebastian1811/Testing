@@ -13,8 +13,7 @@ pipeline {
     }
     stages {
         stage('Environment variables') { 
-            scripts {
-                echo "${env}"
+            steps {
                 echo "BUILD NUMBER: ${env.BUILD_NUMBER}"
             }
         }
