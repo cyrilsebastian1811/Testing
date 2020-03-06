@@ -11,7 +11,7 @@ pipeline {
         // DOCKERHUB_CREDENTIALS_USR and DOCKERHUB_CREDENTIALS_PSW automatically available
     }
     stages {
-        stage('Checkout') { 
+        stage('Checkout Testing') { 
             steps {
                 script {
                     git_info = checkout([
@@ -47,6 +47,25 @@ pipeline {
         stage('Remove Images') { 
             steps {
                 sh "docker system prune --all -f"
+            }
+        }
+
+        stage('Checkout Helm-Charts') { 
+            steps {
+                script {
+                    git_info = checkout([
+                        $class: 'GitSCM', branches: [[name: '*/test']], 
+                        doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [],
+                        userRemoteConfigs: [[
+                            credentialsId: 'github-ssh', 
+                            url: 'git@github.com:cyrilsebastian1811/helm-charts.git'
+                        ]]
+                    ])
+                }
+
+                sh 'helm version'
+                
+                echo "${BUILD_NUMBER}"
             }
         }
     }
