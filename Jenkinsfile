@@ -70,6 +70,7 @@ pipeline {
                 sh "ls"
                 echo "${BUILD_NUMBER}"
                 sh "helm package ./webapp-backend --version 0.1.${BUILD_NUMBER} -u"
+                sh "ls"
                 sh "tar xvf webapp-backend-0.1.${BUILD_NUMBER}.tgz ./webapp-backend/Chart.yaml"
                 sh "rm webapp-backend-0.1.${BUILD_NUMBER}.tgz"
                 sh "git commit -m \"chart version upgrade to 0.1.${BUILD_NUMBER}\""
