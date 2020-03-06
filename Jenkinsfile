@@ -68,10 +68,11 @@ pipeline {
         stage('Helm-Charts update') { 
             steps {
                 sh "ls"
+                sh "pwd"
                 echo "${BUILD_NUMBER}"
                 sh "helm package ./webapp-backend --version 0.1.${BUILD_NUMBER} -u"
                 sh "ls -l"
-                sh "tar xvf webapp-backend-0.1.${BUILD_NUMBER}.tgz Chart.yaml"
+                sh "tar xvf webapp-backend-0.1.${BUILD_NUMBER}.tgz"
                 // sh "tar xvf webapp-backend-0.1.${BUILD_NUMBER}.tgz ./webapp-backend/Chart.yaml"
                 sh "rm *.tgz"
                 sh "git commit -m \"chart version upgrade to 0.1.${BUILD_NUMBER}\""
