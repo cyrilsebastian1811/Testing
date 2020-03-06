@@ -68,10 +68,13 @@ pipeline {
         stage('Helm-Charts update') { 
             steps {
                 sh "ls"
-                sh "cd webapp-backend"
-                sh "helm upgrade --set version=0.1.${BUILD_NUMBER} backend ./webapp-backend"
-                sh "cat Chart.yaml"
                 echo "${BUILD_NUMBER}"
+                sh "helm package ./webapp-backend --version 0.1.${BUILD_NUMBER} -u"
+                sh "tar xvf webapp-backend-0.1.${BUILD_NUMBER}.tgz ./webapp-backend/Chart.yaml"
+                sh "rm webapp-backend-0.1.${BUILD_NUMBER}.tgz"
+                sh "git commit -m \"chart version upgrade to 0.1.${BUILD_NUMBER}\""
+                // sh "git push origin test"
+                sh "cat Chart.yaml"
             }
         }
     }
