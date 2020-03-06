@@ -67,8 +67,10 @@ pipeline {
 
         stage('Helm-Charts update') { 
             steps {
-                sh 'ls'
-
+                sh "ls"
+                sh "cd webapp-backend"
+                sh "helm upgrade --set version=0.1.${BUILD_NUMBER} backend ."
+                sh "cat Chart.yaml"
                 echo "${BUILD_NUMBER}"
             }
         }
