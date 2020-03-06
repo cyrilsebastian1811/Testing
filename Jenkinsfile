@@ -73,11 +73,10 @@ pipeline {
                 sh "helm package ./webapp-backend --version 0.1.${BUILD_NUMBER} -u"
                 sh "ls -l"
                 sh "tar xvf webapp-backend-0.1.${BUILD_NUMBER}.tgz webapp-backend/Chart.yaml"
-                // sh "tar xvf webapp-backend-0.1.${BUILD_NUMBER}.tgz ./webapp-backend/Chart.yaml"
                 sh "rm *.tgz"
                 sh "ls -l"
                 sh "git branch"
-                sh "cat Chart.yaml"
+                sh "cat ./webapp-backend/Chart.yaml"
                 sh "git commit -m \"chart version upgrade to 0.1.${BUILD_NUMBER}\""
                 // sh "git push origin test"
             }
