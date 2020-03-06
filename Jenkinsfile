@@ -62,9 +62,13 @@ pipeline {
                         ]]
                     ])
                 }
+            }
+        }
 
-                sh 'helm version'
-                
+        stage('Helm-Charts update') { 
+            steps {
+                sh 'ls'
+
                 echo "${BUILD_NUMBER}"
             }
         }
