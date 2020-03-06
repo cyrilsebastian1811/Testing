@@ -76,9 +76,10 @@ pipeline {
                 // sh "tar xvf webapp-backend-0.1.${BUILD_NUMBER}.tgz ./webapp-backend/Chart.yaml"
                 sh "rm *.tgz"
                 sh "ls -l"
+                sh "git branch"
+                sh "cat Chart.yaml"
                 sh "git commit -m \"chart version upgrade to 0.1.${BUILD_NUMBER}\""
                 // sh "git push origin test"
-                sh "cat Chart.yaml"
             }
         }
     }
