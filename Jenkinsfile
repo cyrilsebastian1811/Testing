@@ -78,8 +78,8 @@ pipeline {
                 sh "git checkout test" 
                 sh "git branch"
                 sh "cat ./webapp-backend/Chart.yaml"
+                sh "git commit -m \\\"chart version upgrade to 0.1.${BUILD_NUMBER}\\\""
                 withCredentials([sshUserPrivateKey(credentialsId: 'github-ssh')]) {
-                    sh("git commit -m \\\"chart version upgrade to 0.1.${BUILD_NUMBER}\\\"")
                     // sh("git push origin test")
                 }
             }
