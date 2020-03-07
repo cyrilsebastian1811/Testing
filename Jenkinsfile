@@ -79,7 +79,8 @@ pipeline {
                 sh "git branch"
                 // sh "cat ./webapp-backend/Chart.yaml"
                 // sh "git commit -am \\\"version upgrade to 0.1.${BUILD_NUMBER} by jenkins\\\""
-                withCredentials([sshUserPrivateKey(credentialsId: 'github-ssh')]) {
+                sshagent (credentials: ['github-ssh']) {
+                    // sh("git tag -a some_tag -m 'Jenkins'")
                     sh("git push origin test")
                 }
             }
