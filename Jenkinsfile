@@ -77,8 +77,8 @@ pipeline {
                 sh "ls -l"
                 sh "git checkout test" 
                 sh "git branch"
-                sh "cat ./webapp-backend/Chart.yaml"
-                sh "git commit -m \\\"chart version upgrade to 0.1.${BUILD_NUMBER}\\\""
+                // sh "cat ./webapp-backend/Chart.yaml"
+                sh "git commit -m \\\"version upgrade to 0.1.${BUILD_NUMBER} by jenkins\\\""
                 withCredentials([sshUserPrivateKey(credentialsId: 'github-ssh')]) {
                     // sh("git push origin test")
                 }
