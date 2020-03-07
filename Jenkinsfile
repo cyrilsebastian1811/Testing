@@ -75,6 +75,7 @@ pipeline {
                 sh "tar xvf webapp-backend-0.1.${BUILD_NUMBER}.tgz webapp-backend/Chart.yaml"
                 sh "rm *.tgz"
                 sh "ls -l"
+                sh "git checkout test" 
                 sh "git branch"
                 sh "cat ./webapp-backend/Chart.yaml"
                 withCredentials([sshUserPrivateKey(credentialsId: 'github-ssh')]) {
