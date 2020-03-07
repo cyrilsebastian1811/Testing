@@ -78,7 +78,7 @@ pipeline {
                 sh "git checkout test" 
                 sh "git branch"
                 sh "git add --all"
-                sh "git commit -am \\\"version upgrade to 0.1.${BUILD_NUMBER} by jenkins\\\""
+                sh "git commit -m \\\"version upgrade to 0.1.${BUILD_NUMBER} by jenkins\\\""
                 sshagent (credentials: ['github-ssh']) {
                     // sh("git tag -a 0.1.${BUILD_NUMBER} -m 'Jenkins'")
                     sh("git push origin test")
