@@ -65,22 +65,43 @@ pipeline {
             }
         }
 
+        // // 1st way
+        // stage('Helm-Charts update') { 
+        //     steps {
+        //         sh "ls"
+        //         sh "pwd"
+        //         echo "${BUILD_NUMBER}"
+        //         sh "helm package ./webapp-backend --version 0.1.${BUILD_NUMBER} -u"
+        //         sh "ls -l"
+        //         sh "tar xvf webapp-backend-0.1.${BUILD_NUMBER}.tgz webapp-backend/Chart.yaml"
+        //         sh "rm *.tgz"
+        //         sh "ls -l"
+        //         sh "git checkout test" 
+        //         sh "git branch"
+        //         sh "git commit -am 'version upgrade to 0.1.${BUILD_NUMBER} by jenkins'"
+        //         sshagent (credentials: ['github-ssh']) {
+        //             sh("git push origin test")
+        //         }
+        //     }
+        // }
+
+        // 2nd way
         stage('Helm-Charts update') { 
             steps {
                 sh "ls"
                 sh "pwd"
                 echo "${BUILD_NUMBER}"
-                sh "helm package ./webapp-backend --version 0.1.${BUILD_NUMBER} -u"
-                sh "ls -l"
-                sh "tar xvf webapp-backend-0.1.${BUILD_NUMBER}.tgz webapp-backend/Chart.yaml"
-                sh "rm *.tgz"
-                sh "ls -l"
-                sh "git checkout test" 
+                sh "git checkout test"
                 sh "git branch"
-                // sh "git add --all"
+                sh "chart_version_before=$(yq read ./webapp-backend/config.yaml version)"
+                echo "chart_version_before: $chart_version_before"
+                sh "yq write -i ./webapp-backend/config.yaml 'version' 0.1.${BUILD_NUMBER}"
+                sh "chart_version_after=$(yq read ./webapp-backend/config.yaml version)"
+                echo "chart_version_after: $chart_version_after"
+                sh "yq write -i ./webapp-backend/values.yaml 'dockerImage' ${DOCKERHUB_CREDENTIALS_USR}/testing:${git_hash}"
+                sh "yq write -i ./webapp-backend/values.yaml 'imageCredentials.registry' https://index.docker.io/v1/"
                 sh "git commit -am 'version upgrade to 0.1.${BUILD_NUMBER} by jenkins'"
                 sshagent (credentials: ['github-ssh']) {
-                    // sh("git tag -a 0.1.${BUILD_NUMBER} -m 'Jenkins'")
                     sh("git push origin test")
                 }
             }
