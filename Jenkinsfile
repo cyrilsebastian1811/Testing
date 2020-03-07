@@ -93,11 +93,13 @@ pipeline {
                 echo "${BUILD_NUMBER}"
                 sh "git checkout test"
                 sh "git branch"
-                sh "sudo cat webapp-backend/Chart.yaml | yq r - version"
-                sh "sudo yq write -i ./webapp-backend/Chart.yaml 'version' 0.1.${BUILD_NUMBER}"
-                sh "sudo cat webapp-backend/Chart.yaml | yq r - version"
-                sh "sudo yq write -i ./webapp-backend/values.yaml 'dockerImage' ${DOCKERHUB_CREDENTIALS_USR}/testing:${git_hash}"
-                sh "sudo yq write -i ./webapp-backend/values.yaml 'imageCredentials.registry' https://index.docker.io/v1/"
+
+                sh "yq r webapp-backend/Chart.yaml version"
+                sh "yq w -i ./webapp-backend/Chart.yaml 'version' 0.1.${BUILD_NUMBER}"
+                sh "yq r webapp-backend/Chart.yaml version"
+                sh "yq w -i ./webapp-backend/values.yaml 'dockerImage' ${DOCKERHUB_CREDENTIALS_USR}/testing:${git_hash}"
+                sh "yq w -i ./webapp-backend/values.yaml 'imageCredentials.registry' https://index.docker.io/v1/"
+                
                 sh "git commit -am 'version upgrade to 0.1.${BUILD_NUMBER} by jenkins'"
                 sshagent (credentials: ['github-ssh']) {
                     sh("git push origin test")
