@@ -1,4 +1,4 @@
-## Introduction to creating operators 
+# Introduction to creating operators 
 operator-sdk uses operator runtime (series of go packages, helps creation of operators easy)
 
 ### **Creating a New GO project operator**
@@ -24,7 +24,6 @@ For Go-based operators:
 >    --kind string       Kubernetes resource Kind name. (e.g AppService, PodSet, anything)
 >    --api-version       Kubernetes APIVersion that has a format of $GROUP_NAME/$VERSION (e.g app.example.com/v1alpha1)
 > ```
-
 
 ### Generators
 **1. operator-sdk generate:** command invokes a specific generator to generate code or manifests on disk.
@@ -92,6 +91,7 @@ This command will run or deploy your Operator in two different modes: locally an
 >    --olm-namespace string         [olm only] The namespace where OLM is installed (default "olm")
 >    --operator-namespace string    [olm only] The namespace where operator resources are created. It must already exist in the cluster or be defined in a manifest passed to --include
 > ```
+
 
 ## Information regarding Generating CRD (<a href="https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html">Documentation</a>)
 <b>operator-sdk generate crds</b> generates manifests for CustomResourceDefinitions. <b>operator-sdk generate crds</b> reads kubebuilder annotations of the form // +kubebuilder:something... defined as Go comments in the <your-api-kind>_types.go file under pkg/apis/... to produce the CRD manifests. The section below explains various supported annotations.
