@@ -97,7 +97,7 @@ This command will run or deploy your Operator in two different modes: locally an
 ## Information regarding Generating CRD (<a href="https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html">Documentation</a>)
 <b>operator-sdk generate crds</b> generates manifests for CustomResourceDefinitions. <b>operator-sdk generate crds</b> reads kubebuilder annotations of the form // +kubebuilder:something... defined as Go comments in the <your-api-kind>_types.go file under pkg/apis/... to produce the CRD manifests. The section below explains various supported annotations.
 
-1. **Validation:**
+**1. Validation:**
 One can specify validation for a field by annotating the field with kubebuilder annotation which is of the form // +kubebuilder:validation:<key=value>. Currently, supporting keys are <b>Maximum</b>, <b>Minimum</b>, <b>MaxLength</b>, <b>MinLength</b>, <b>MaxItems</b>, <b>MinItems</b>, <b>UniqueItems</b>, <b>Enum</b>, <b>Pattern</b>, <b>ExclusiveMaximum</b>, <b>ExclusiveMinimum</b>, <b>MultipleOf</b>, <b>Format</b>. 👉 <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#properties">list of keys</a>
 
 **Example:**
