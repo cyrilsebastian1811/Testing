@@ -28,11 +28,11 @@ For Go-based operators:
 ### Adding a new custom API
 1. <b>operator-sdk generate</b> : command invokes a specific generator to generate code or manifests on disk.
     1. <b>operator-sdk generate k8s</b> : Generates Kubernetes code for custom resource 
-    generates code for custom resources given the API specs in pkg/apis// directories to comply with kube-API requirements. Go code is generated under pkg/apis///zz_generated.deepcopy.go. Example:
+    generates code for custom resources given the API specs in pkg/apis// directories to comply with kube-API requirements. Go code is generated under pkg/apis///zz_generated.deepcopy.go.
     > ```
     > operator-sdk generate k8s [flags]
     > ```
-    Example:
+    **Example:**
     >> ```
     >> $ tree pkg/apis
     >> pkg/apis/
@@ -49,7 +49,7 @@ For Go-based operators:
     > flags:
     > --crd-version string       CRD version to generate (default "v1beta1")
     > ```
-    Example:
+    **Example:**
     >> ```
     >> $ tree deploy/crds
     >> ├── deploy/crds/app.csye7374.com_v1alpha1_podset_cr.yaml
@@ -66,7 +66,7 @@ This command creates a new controller package under pkg/controller/ that, by def
 >    --kind string       Kubernetes resource Kind name. (e.g AppService, PodSet, anything)
 >    --api-version       Kubernetes APIVersion that has a format of $GROUP_NAME/$VERSION (e.g app.example.com/v1alpha1)
 > ```
-Example:
+**Example:**
 >> ```
 >> $ tree pkg/controller
 >> pkg/controller/
@@ -97,10 +97,10 @@ This command will run or deploy your Operator in two different modes: locally an
 ## Information regarding Generating CRD (<a href="https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html">Documentation</a>)
 <b>operator-sdk generate crds</b> generates manifests for CustomResourceDefinitions. <b>operator-sdk generate crds</b> reads kubebuilder annotations of the form // +kubebuilder:something... defined as Go comments in the <your-api-kind>_types.go file under pkg/apis/... to produce the CRD manifests. The section below explains various supported annotations.
 
-1. Validation 
+1. **Validation:**
 One can specify validation for a field by annotating the field with kubebuilder annotation which is of the form // +kubebuilder:validation:<key=value>. Currently, supporting keys are <b>Maximum</b>, <b>Minimum</b>, <b>MaxLength</b>, <b>MinLength</b>, <b>MaxItems</b>, <b>MinItems</b>, <b>UniqueItems</b>, <b>Enum</b>, <b>Pattern</b>, <b>ExclusiveMaximum</b>, <b>ExclusiveMinimum</b>, <b>MultipleOf</b>, <b>Format</b>. 👉 <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#properties">list of keys</a>
 
-Example:
+**Example:**
 >> ```
 >> type ToySpec struct {
 >> 
@@ -127,7 +127,7 @@ Example:
 >>     Rank    int    `json:"rank"`
 >> }
 
-2. Additional printer columns
+2. **Additional printer columns:**
 kubectl uses server-side printing. The server decides which columns are shown by the kubectl get command. You can customize these columns using a CustomResourceDefinition. To add an additional column, add a comment with the following annotation format just above the struct definition of the Kind.
 Format: // +kubebuilder:printcolumn:name="Name",type="type",JSONPath="json-path",description="desc",priority="priority",format="format"
 Note that description, priority and format are optional. Refer to the additonal printer columns docs to learn more about the values of name, type, JsonPath, description, priority and format. 👉 <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#data-types">list of types</a>
@@ -145,7 +145,7 @@ The following example adds the Spec, Replicas, and Age columns:
 >>     Status CronTabStatus `json:"status,omitempty"`
 >> }
 
-3. Subresource
+3. **Subresource:**
     1. Status : To enable /status subresource, annotate the kind with // +kubebuilder:subresource:status format
     2. Scale : To enable /scale subresource, annotate the kind with // +kubebuilder:subresource:scale:specpath=<jsonpath>,statuspath=<jsonpath>,selectorpath=<jsonpath> format.
     Scale subresource annotation contains three fields: specpath, statuspath and selectorpath:
@@ -162,7 +162,7 @@ The following example adds the Spec, Replicas, and Age columns:
 ### Owners and dependents
 1. Some Kubernetes objects are owners of other objects. For example, a ReplicaSet is the owner of a set of Pods. The owned objects are called dependents of the owner object. Every dependent object has a metadata.ownerReferences field that points to the owning object.
 2. Sometimes, Kubernetes sets the value of ownerReference automatically. For example, when you create a ReplicaSet, Kubernetes automatically sets the ownerReference field of each Pod in the ReplicaSet. In 1.8, Kubernetes automatically sets the value of ownerReference for objects created or adopted by ReplicationController, ReplicaSet, StatefulSet, DaemonSet, Deployment, Job and CronJob.
-Example:
+**Example:**
 >> ```
 >> apiVersion: v1
 >> kind: Pod
