@@ -2,7 +2,7 @@
 operator-sdk uses operator runtime (series of go packages, helps creation of operators easy)
 
 ### **Creating a New GO project operator**
-1. <b>operator-sdk new</b> : Initializing a operator project using go
+**1. operator-sdk new:** Initializing a operator project using go
 >  ```
 > operator-sdk new demo --type=go
 > 
@@ -12,7 +12,7 @@ operator-sdk uses operator runtime (series of go packages, helps creation of ope
 By default the operator is Namespace scoped, 👉 <a href="https://github.com/operator-framework/operator-sdk/blob/master/doc/operator-scope.md">cluster scoped operator</a>
 
 ### Adding a new custom API
-1. <b>operator-sdk add api</b> : Adds a new api definition under pkg/apis, this links the code aware of the CRD that will be used with this api.
+**1. operator-sdk add api:** Adds a new api definition under pkg/apis, in order for the code to be aware of the CRD that will be used with this api.\
 For Go-based operators:
     1. Creates the api definition for a new custom resource under pkg/apis.
     2. By default, this command runs Kubernetes deepcopy and CRD generators on tagged types in all paths under pkg/apis. Go code is generated under pkg/apis///zz_generated.deepcopy.go. Generation can be disabled with the --skip-generation flag for Go-based operators.
@@ -26,8 +26,8 @@ For Go-based operators:
 > ```
 
 ### Adding a new custom API
-1. <b>operator-sdk generate</b> : command invokes a specific generator to generate code or manifests on disk.
-    1. <b>operator-sdk generate k8s</b> : Generates Kubernetes code for custom resource 
+**1. operator-sdk generate:** command invokes a specific generator to generate code or manifests on disk.
+    **1. operator-sdk generate k8s:** Generates Kubernetes code for custom resource 
     generates code for custom resources given the API specs in pkg/apis// directories to comply with kube-API requirements. Go code is generated under pkg/apis///zz_generated.deepcopy.go.
     > ```
     > operator-sdk generate k8s [flags]
@@ -41,7 +41,7 @@ For Go-based operators:
     >>         ├── zz_generated.deepcopy.go
     >> ```
 
-    2. <b>operator-sdk generate crds</b> : Generates CRDs for API's
+    **2. operator-sdk generate crds:** Generates CRDs for API's
     generates CRDs or updates them if they exist, under deploy/crds/<api-version>_<kinds>_crd.yaml; OpenAPI V3 validation YAML is generated as a 'validation' object
     > ```
     > operator-sdk generate crds [flags]
@@ -57,7 +57,7 @@ For Go-based operators:
     >> ```
 
 ### Adding a new controller
-1. <b>operator-sdk add controller</b> : Add a new controller package to your operator project.
+**1. operator-sdk add controller:** Add a new controller package to your operator project\
 This command creates a new controller package under pkg/controller/ that, by default, reconciles on a custom resource for the specified apiversion and kind. The controller will expect to use the custom resource type that should already be defined under pkg/apis// via the "operator-sdk add api" command.
 > ```
 > operator-sdk add controller --api-version=app.csye7374.com/v1alpha1 --kind=PodSet
@@ -78,7 +78,7 @@ This command creates a new controller package under pkg/controller/ that, by def
 
 
 ### Running the operator
-1. <b>operator-sdk run</b> : Run an Operator in a variety of environments
+**1. operator-sdk run:** Run an Operator in a variety of environments\
 This command will run or deploy your Operator in two different modes: locally and using OLM. These modes are controlled by setting --local and --olm run mode flags. Each run mode has a separate set of flags that configure 'run' for that mode. Run 'operator-sdk run --help' for more information on these flags.
 > ```
 > operator-sdk run --local --namespace=demo
