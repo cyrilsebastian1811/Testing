@@ -153,6 +153,27 @@ The following example adds the Spec, Replicas, and Age columns:
         **1. specpath** refers to specReplicasPath attribute of Scale object, and value jsonpath defines the JSONPath inside of a custom resource that corresponds to Scale.Spec.Replicas. This is a required field.
         **2. statuspath** refers to statusReplicasPath attribute of Scale object. and the jsonpath value of it defines the JSONPath inside of a custom resource that corresponds to Scale.Status.Replicas. This is a required field.
         **3. selectorpath** refers to labelSelectorPath attribute of Scale object, and the value jsonpath defines the JSONPath inside of a custom resource that corresponds to Scale.Status.Selector. This is an optional field.
-    >> ```
-    >> // +kubebuilder:subresource:scale:specpath=.spec.replicas,statuspath=.status.replicas
-    >> ```
+>> ```
+>> // +kubebuilder:subresource:scale:specpath=.spec.replicas,statuspath=.status.replicas
+>> ```
+
+
+## Concepts for Controller
+### Owners and dependents
+1. Some Kubernetes objects are owners of other objects. For example, a ReplicaSet is the owner of a set of Pods. The owned objects are called dependents of the owner object. Every dependent object has a metadata.ownerReferences field that points to the owning object.
+2. Sometimes, Kubernetes sets the value of ownerReference automatically. For example, when you create a ReplicaSet, Kubernetes automatically sets the ownerReference field of each Pod in the ReplicaSet. In 1.8, Kubernetes automatically sets the value of ownerReference for objects created or adopted by ReplicationController, ReplicaSet, StatefulSet, DaemonSet, Deployment, Job and CronJob.
+**Example:**
+>> ```
+>> apiVersion: v1
+>> kind: Pod
+>> metadata:
+>>   ...
+>>   ownerReferences:
+>>   - apiVersion: apps/v1
+>>     controller: true
+>>     blockOwnerDeletion: true
+>>     kind: ReplicaSet
+>>     name: my-repset
+>>     uid: d9607e19-f88f-11e6-a518-42010a800195
+>>   ...
+>> ```
