@@ -126,9 +126,10 @@ One can specify validation for a field by annotating the field with kubebuilder 
 >>     // +kubebuilder:validation:Enum=1,2,3
 >>     Rank    int    `json:"rank"`
 >> }
+>> ```
 
 2. **Additional printer columns:**\
-kubectl uses server-side printing. The server decides which columns are shown by the kubectl get command. You can customize these columns using a CustomResourceDefinition. To add an additional column, add a comment with the following annotation format just above the struct definition of the Kind.
+kubectl uses server-side printing. The server decides which columns are shown by the kubectl get command. You can customize these columns using a CustomResourceDefinition. To add an additional column, add a comment with the following annotation format just above the struct definition of the Kind.\
 Format: // +kubebuilder:printcolumn:name="Name",type="type",JSONPath="json-path",description="desc",priority="priority",format="format"
 Note that description, priority and format are optional. Refer to the additonal printer columns docs to learn more about the values of name, type, JsonPath, description, priority and format. 👉 <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#data-types">list of types</a>
 
@@ -144,8 +145,9 @@ The following example adds the Spec, Replicas, and Age columns:
 >>     Spec   CronTabSpec   `json:"spec,omitempty"`
 >>     Status CronTabStatus `json:"status,omitempty"`
 >> }
+>> ```
 
-3. **Subresource:**\
+3. **Subresource:**
     1. Status : To enable /status subresource, annotate the kind with // +kubebuilder:subresource:status format
     2. Scale : To enable /scale subresource, annotate the kind with // +kubebuilder:subresource:scale:specpath=<jsonpath>,statuspath=<jsonpath>,selectorpath=<jsonpath> format.
     Scale subresource annotation contains three fields: specpath, statuspath and selectorpath:
