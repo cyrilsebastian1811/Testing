@@ -1,7 +1,7 @@
 ## Introduction to crreating operators 
 operator-sdk uses operator runtime (series of go packages, helps creation of operators easy)
 
-### <b>Creating a New GO project operator</b>
+### **Creating a New GO project operator**
 1. <b>operator-sdk new</b> : Initializing a operator project using go
 >  ```
 > operator-sdk new demo --type=go
