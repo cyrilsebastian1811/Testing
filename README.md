@@ -1,4 +1,4 @@
-## Introduction to crreating operators 
+## Introduction to creating operators 
 operator-sdk uses operator runtime (series of go packages, helps creation of operators easy)
 
 ### **Creating a New GO project operator**
@@ -42,7 +42,7 @@ For Go-based operators:
     >> ```
 
     2. <b>operator-sdk generate crds</b> : Generates CRDs for API's
-    generates CRDs or updates them if they exist, under deploy/crds/__crd.yaml; OpenAPI V3 validation YAML is generated as a 'validation' object
+    generates CRDs or updates them if they exist, under deploy/crds/<api-version>_<kinds>_crd.yaml; OpenAPI V3 validation YAML is generated as a 'validation' object
     > ```
     > operator-sdk generate crds [flags]
     > 
