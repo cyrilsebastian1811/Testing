@@ -24,3 +24,33 @@ For Go-based operators:
 >    --kind string       Kubernetes resource Kind name. (e.g AppService, PodSet, anything)
 >    --api-version       Kubernetes APIVersion that has a format of $GROUP_NAME/$VERSION (e.g app.example.com/v1alpha1)
 > ```
+
+
+### Generators
+**1. operator-sdk generate:** command invokes a specific generator to generate code or manifests on disk.
+    **1. operator-sdk generate k8s:** Generates Kubernetes code for custom resource given the API specs in pkg/apis/ directories to comply with kube-API requirements. Go code is generated under pkg/apis///zz_generated.deepcopy.go
+   > ```
+   > operator-sdk generate k8s [flags]
+   > ```
+   **Example:**
+   >> ```
+   >> $ tree pkg/apis
+   >> pkg/apis/
+   >> └── app
+   >>     └── v1alpha1
+   >>         ├── zz_generated.deepcopy.go
+   >> ```
+
+   **2. operator-sdk generate crds:** Generates CRDs for API's or updates them if they exist, under deploy/crds/<api-version>_<kinds>_crd.yaml; OpenAPI V3 validation YAML is generated as a 'validation' object
+   > ```
+   > operator-sdk generate crds [flags]
+   > 
+   > flags:
+   > --crd-version string       CRD version to generate (default "v1beta1")
+   > ```
+   **Example:**
+   >> ```
+   >> $ tree deploy/crds
+   >> ├── deploy/crds/app.csye7374.com_v1alpha1_podset_cr.yaml
+   >> ├── deploy/crds/app.csye7374.com_podsets_crd.yaml
+   >> ```
