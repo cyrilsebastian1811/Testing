@@ -92,3 +92,67 @@ This command will run or deploy your Operator in two different modes: locally an
 >    --olm-namespace string         [olm only] The namespace where OLM is installed (default "olm")
 >    --operator-namespace string    [olm only] The namespace where operator resources are created. It must already exist in the cluster or be defined in a manifest passed to --include
 > ```
+
+## Information regarding Generating CRD (<a href="https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html">Documentation</a>)
+<b>operator-sdk generate crds</b> generates manifests for CustomResourceDefinitions. <b>operator-sdk generate crds</b> reads kubebuilder annotations of the form // +kubebuilder:something... defined as Go comments in the <your-api-kind>_types.go file under pkg/apis/... to produce the CRD manifests. The section below explains various supported annotations.
+
+**1. Validation:**\
+One can specify validation for a field by annotating the field with kubebuilder annotation which is of the form // +kubebuilder:validation:<key=value>. Currently, supporting keys are <b>Maximum</b>, <b>Minimum</b>, <b>MaxLength</b>, <b>MinLength</b>, <b>MaxItems</b>, <b>MinItems</b>, <b>UniqueItems</b>, <b>Enum</b>, <b>Pattern</b>, <b>ExclusiveMaximum</b>, <b>ExclusiveMinimum</b>, <b>MultipleOf</b>, <b>Format</b>. 👉 <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#properties">list of keys</a>
+
+**Example:**
+>> ```
+>> type ToySpec struct {
+>> 
+>>     // +kubebuilder:validation:Maximum=100
+>>     // +kubebuilder:validation:Minimum=1
+>>     // +kubebuilder:validation:ExclusiveMinimum=true
+>>     Power  float32 `json:"power,omitempty"`
+>> 
+>>     Bricks int32   `json:"bricks,omitempty"`
+>>     // +kubebuilder:validation:MaxLength=15
+>>     // +kubebuilder:validation:MinLength=1
+>>     // +kubebuilder:validation:Pattern=\w*(\s\w*)*\d*
+>>     Name string `json:"name,omitempty"`
+>> 
+>>     // +kubebuilder:validation:MaxItems=500
+>>     // +kubebuilder:validation:MinItems=1
+>>     // +kubebuilder:validation:UniqueItems=false
+>>     Knights []string `json:"knights,omitempty"`
+>> 
+>>     // +kubebuilder:validation:Enum=Lion,Wolf,Dragon
+>>     Alias string `json:"alias,omitempty"`
+>> 
+>>     // +kubebuilder:validation:Enum=1,2,3
+>>     Rank    int    `json:"rank"`
+>> }
+>> ```
+
+2. **Additional printer columns:**\
+kubectl uses server-side printing. The server decides which columns are shown by the kubectl get command. You can customize these columns using a CustomResourceDefinition. To add an additional column, add a comment with the following annotation format just above the struct definition of the Kind.\
+Format: // +kubebuilder:printcolumn:name="Name",type="type",JSONPath="json-path",description="desc",priority="priority",format="format"
+Note that description, priority and format are optional. Refer to the additonal printer columns docs to learn more about the values of name, type, JsonPath, description, priority and format. 👉 <a href="https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#data-types">list of types</a>
+
+The following example adds the Spec, Replicas, and Age columns:
+>> ```
+>> // +kubebuilder:printcolumn:name="Spec",type="integer",JSONPath=".spec.cronSpec",description="status of the kind"
+>> // +kubebuilder:printcolumn:name="Replicas",type="integer",JSONPath=".spec.Replicas"
+>> // +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp"
+>> type CronTab struct {
+>>     metav1.TypeMeta   `json:",inline"`
+>>     metav1.ObjectMeta `json:"metadata,omitempty"`
+>> 
+>>     Spec   CronTabSpec   `json:"spec,omitempty"`
+>>     Status CronTabStatus `json:"status,omitempty"`
+>> }
+>> ```
+
+3. **Subresource:**
+    1. Status : To enable /status subresource, annotate the kind with // +kubebuilder:subresource:status format
+    2. Scale : To enable /scale subresource, annotate the kind with // +kubebuilder:subresource:scale:specpath=<jsonpath>,statuspath=<jsonpath>,selectorpath=<jsonpath> format.
+    Scale subresource annotation contains three fields: specpath, statuspath and selectorpath:
+        **1. specpath** refers to specReplicasPath attribute of Scale object, and value jsonpath defines the JSONPath inside of a custom resource that corresponds to Scale.Spec.Replicas. This is a required field.
+        **2. statuspath** refers to statusReplicasPath attribute of Scale object. and the jsonpath value of it defines the JSONPath inside of a custom resource that corresponds to Scale.Status.Replicas. This is a required field.
+        **3. selectorpath** refers to labelSelectorPath attribute of Scale object, and the value jsonpath defines the JSONPath inside of a custom resource that corresponds to Scale.Status.Selector. This is an optional field.
+    >> ```
+    >> // +kubebuilder:subresource:scale:specpath=.spec.replicas,statuspath=.status.replicas
+    >> ```
