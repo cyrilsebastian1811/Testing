@@ -28,33 +28,33 @@ For Go-based operators:
 ### Adding a new custom API
 **1. operator-sdk generate:** command invokes a specific generator to generate code or manifests on disk.
     **1. operator-sdk generate k8s:** Generates Kubernetes code for custom resource 
-    generates code for custom resources given the API specs in pkg/apis// directories to comply with kube-API requirements. Go code is generated under pkg/apis///zz_generated.deepcopy.go.
-    > ```
-    > operator-sdk generate k8s [flags]
-    > ```
+    generates code for custom resources given the API specs in pkg/apis// directories to comply with kube-API requirements. Go code is generated under pkg/apis///zz_generated.deepcopy.go
+> ```
+> operator-sdk generate k8s [flags]
+> ```
     **Example:**
-    >> ```
-    >> $ tree pkg/apis
-    >> pkg/apis/
-    >> └── app
-    >>     └── v1alpha1
-    >>         ├── zz_generated.deepcopy.go
-    >> ```
+>> ```
+>> $ tree pkg/apis
+>> pkg/apis/
+>> └── app
+>>     └── v1alpha1
+>>         ├── zz_generated.deepcopy.go
+>> ```
 
     **2. operator-sdk generate crds:** Generates CRDs for API's
     generates CRDs or updates them if they exist, under deploy/crds/<api-version>_<kinds>_crd.yaml; OpenAPI V3 validation YAML is generated as a 'validation' object
-    > ```
-    > operator-sdk generate crds [flags]
-    > 
-    > flags:
-    > --crd-version string       CRD version to generate (default "v1beta1")
-    > ```
+> ```
+> operator-sdk generate crds [flags]
+> 
+> flags:
+> --crd-version string       CRD version to generate (default "v1beta1")
+> ```
     **Example:**
-    >> ```
-    >> $ tree deploy/crds
-    >> ├── deploy/crds/app.csye7374.com_v1alpha1_podset_cr.yaml
-    >> ├── deploy/crds/app.csye7374.com_podsets_crd.yaml
-    >> ```
+>> ```
+>> $ tree deploy/crds
+>> ├── deploy/crds/app.csye7374.com_v1alpha1_podset_cr.yaml
+>> ├── deploy/crds/app.csye7374.com_podsets_crd.yaml
+>> ```
 
 ### Adding a new controller
 **1. operator-sdk add controller:** Add a new controller package to your operator project\
@@ -151,9 +151,9 @@ The following example adds the Spec, Replicas, and Age columns:
     1. Status : To enable /status subresource, annotate the kind with // +kubebuilder:subresource:status format
     2. Scale : To enable /scale subresource, annotate the kind with // +kubebuilder:subresource:scale:specpath=<jsonpath>,statuspath=<jsonpath>,selectorpath=<jsonpath> format.
     Scale subresource annotation contains three fields: specpath, statuspath and selectorpath:
-        1. <b>specpath</b> refers to specReplicasPath attribute of Scale object, and value jsonpath defines the JSONPath inside of a custom resource that corresponds to Scale.Spec.Replicas. This is a required field.
-        2. <b>statuspath</b> refers to statusReplicasPath attribute of Scale object. and the jsonpath value of it defines the JSONPath inside of a custom resource that corresponds to Scale.Status.Replicas. This is a required field.
-        3. <b>selectorpath</b> refers to labelSelectorPath attribute of Scale object, and the value jsonpath defines the JSONPath inside of a custom resource that corresponds to Scale.Status.Selector. This is an optional field.
+        **1. specpath** refers to specReplicasPath attribute of Scale object, and value jsonpath defines the JSONPath inside of a custom resource that corresponds to Scale.Spec.Replicas. This is a required field.
+        **2. statuspath** refers to statusReplicasPath attribute of Scale object. and the jsonpath value of it defines the JSONPath inside of a custom resource that corresponds to Scale.Status.Replicas. This is a required field.
+        **3. selectorpath** refers to labelSelectorPath attribute of Scale object, and the value jsonpath defines the JSONPath inside of a custom resource that corresponds to Scale.Status.Selector. This is an optional field.
     >> ```
     >> // +kubebuilder:subresource:scale:specpath=.spec.replicas,statuspath=.status.replicas
     >> ```
